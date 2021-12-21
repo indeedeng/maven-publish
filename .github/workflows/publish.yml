@@ -1,0 +1,23 @@
+on:
+  workflow_call:
+    inputs:
+      repo:
+        description: 'Repository path to build and publish'
+        default: 'util'
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: indeedeng/${{ inputs.repo }}
+      - uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'zulu'
+      - uses: gradle/gradle-build-action@v2.0.1
+        with:
+          arguments: check publish
