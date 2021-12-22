@@ -43,6 +43,9 @@ fi
 echo "Opened repo ID: $REPOID"
 
 echo "Uploading / Staging ..."
+find "$LOCAL_REPO"
+echo "Total Size:"
+du -s "$LOCAL_REPO"
 mvnstage deploy-staged-repository -DrepositoryDirectory="$LOCAL_REPO" -DstagingRepositoryId="$REPOID" || {
     echo "An error occurred... dropping repo ..."
     mvnstage rc-drop -DstagingRepositoryId="$REPOID"
