@@ -1,19 +1,28 @@
+name: Publish Gradle Maven Library
+
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       repo:
         description: 'Repository path to build and publish'
         default: 'util'
         required: true
         type: string
+      ref:
+        description: 'Ref to checkout from the repo (empty uses the default branch)'
+        default: ''
+        required: false
+        type: string
 
 jobs:
   build:
+    name: Build Project
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
-          repository: indeedeng/${{ inputs.repo }}
+          repository: indeedeng/${{ github.event.inputs.repo }}
+          ref: ${{ github.event.inputs.ref }}
       - uses: actions/setup-java@v2
         with:
           java-version: '11'
@@ -21,3 +30,38 @@ jobs:
       - uses: gradle/gradle-build-action@v2.0.1
         with:
           arguments: check publish
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: reports
+          path: '**/build/reports/*'
+          retention-days: 5
+      - uses: actions/upload-artifact@v2
+        with:
+          name: publishArtifacts
+          path: 'maven-publish'
+          retention-days: 1
+  upload:
+    name: Verify and Upload
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: publishArtifacts
+          path: artifacts
+      - run: ./verify.sh
+        env:
+          REPO: ${{ github.event.inputs.repo }}
+          REF: ${{ github.event.inputs.ref }}
+      - run: ./sign.sh
+        env:
+          SIGNING_SECRING_B64: ${{ secrets.SIGNING_SECRING_B64 }}
+          SIGNING_KEYNAME: ${{ secrets.SIGNING_KEYNAME }}
+          SIGNING_PASSPHRASE: ${{ secrets.SIGNING_PASSPHRASE }}
+      - run: ./upload.sh
+        env:
+          SONATYPE_OSSRH_USERNAME: ${{ secrets.SONATYPE_OSSRH_USERNAME }}
+          SONATYPE_OSSRH_PASSWORD: ${{ secrets.SONATYPE_OSSRH_PASSWORD }}
+          SONATYPE_OSSRH_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_OSSRH_STAGING_PROFILE_ID }}
