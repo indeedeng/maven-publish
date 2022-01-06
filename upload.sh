@@ -43,7 +43,7 @@ fi
 echo "Opened repo ID: $REPOID"
 
 echo "Uploading / Staging ..."
-find "$LOCAL_REPO"
+find "$LOCAL_REPO" -type f
 echo "Total Size:"
 du -s "$LOCAL_REPO"
 mvnstage deploy-staged-repository -DrepositoryDirectory="$LOCAL_REPO" -DstagingRepositoryId="$REPOID" || {
