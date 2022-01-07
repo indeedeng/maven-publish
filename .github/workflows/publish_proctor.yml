@@ -54,3 +54,27 @@ jobs:
           name: publishArtifacts
           path: 'maven-publish'
           retention-days: 1
+  upload:
+    name: Verify and Upload
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: publishArtifacts
+          path: artifacts
+      - run: ./verify.sh
+        env:
+          REPO: proctor
+          REF: ${{ github.event.inputs.ref }}
+      - run: ./sign.sh
+        env:
+          SIGNING_SECRING_B64: ${{ secrets.SIGNING_SECRING_B64 }}
+          SIGNING_KEYNAME: ${{ secrets.SIGNING_KEYNAME }}
+          SIGNING_PASSPHRASE: ${{ secrets.SIGNING_PASSPHRASE }}
+      - run: ./upload.sh
+        env:
+          SONATYPE_OSSRH_USERNAME: ${{ secrets.SONATYPE_OSSRH_USERNAME }}
+          SONATYPE_OSSRH_PASSWORD: ${{ secrets.SONATYPE_OSSRH_PASSWORD }}
+          SONATYPE_OSSRH_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_OSSRH_STAGING_PROFILE_ID }}

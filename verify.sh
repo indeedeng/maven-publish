@@ -13,6 +13,8 @@ if [[ "$REPO" = "util" ]]; then
   ALLOWED_PATTERN='com/indeed/util-.*'
 elif [[ "$REPO" = "status" ]]; then
   ALLOWED_PATTERN='com/indeed/status-.*'
+elif [[ "$REPO" = "proctor" ]]; then
+  ALLOWED_PATTERN='com/indeed/proctor-.*'
 fi
 
 if [[ "$ALLOWED_PATTERN" = "" ]]; then
