@@ -44,9 +44,9 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: version
-          path: nextversion.txt
+          path: version
       - run: |
-          VERSION=$(cat nextversion.txt)
+          VERSION=$(cat version/nextversion.txt)
           mvn -q org.codehaus.mojo:versions-maven-plugin:2.3:set -DgenerateBackupPoms=false -DnewVersion="$VERSION"
           mvn "-DaltDeploymentRepository=repo::default::file://maven-publish" deploy
       - uses: actions/upload-artifact@v2
