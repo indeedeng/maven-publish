@@ -29,7 +29,7 @@ jobs:
           distribution: 'zulu'
       - uses: gradle/gradle-build-action@v2.0.1
         with:
-          arguments: check publish
+          arguments: check publish --refresh-dependencies
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
