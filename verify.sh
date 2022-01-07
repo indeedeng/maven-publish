@@ -11,6 +11,8 @@ echo
 ALLOWED_PATTERN=""
 if [[ "$REPO" = "util" ]]; then
   ALLOWED_PATTERN='com/indeed/util-.*'
+elif [[ "$REPO" = "status" ]]; then
+  ALLOWED_PATTERN='com/indeed/status-.*'
 fi
 
 if [[ "$ALLOWED_PATTERN" = "" ]]; then
