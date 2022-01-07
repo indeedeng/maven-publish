@@ -1,0 +1,54 @@
+name: Publish Proctor
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Ref to checkout from the repo (empty uses the default branch)'
+        default: ''
+        required: false
+        type: string
+
+jobs:
+  findNextVersion:
+    name: Find Next Version Number
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'zulu'
+      - run: echo "plugins { id 'com.indeed.oss' version '1+' }" > build.gradle
+      - uses: gradle/gradle-build-action@v2.0.1
+        with:
+          gradle-version: 7.3.3
+          arguments: findNextVersion --group com.indeed --name proctor-common
+      - uses: actions/upload-artifact@v2
+        with:
+          name: version
+          path: nextversion.txt
+          retention-days: 1
+  build:
+    name: Build Project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: indeedeng/proctor
+          ref: ${{ github.event.inputs.ref }}
+      - uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'zulu'
+      - uses: actions/download-artifact@v2
+        with:
+          name: nextversion.txt
+      - run: |
+          VERSION=$(cat nextversion.txt)
+          mvn -q org.codehaus.mojo:versions-maven-plugin:2.3:set -DgenerateBackupPoms=false -DnewVersion="$VERSION"
+          mvn "-DaltDeploymentRepository=repo::default::file://maven-publish" deploy
+      - uses: actions/upload-artifact@v2
+        with:
+          name: publishArtifacts
+          path: 'maven-publish'
+          retention-days: 1
