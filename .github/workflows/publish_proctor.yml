@@ -48,7 +48,7 @@ jobs:
       - run: |
           VERSION=$(cat version/nextversion.txt)
           mvn -q org.codehaus.mojo:versions-maven-plugin:2.3:set -DgenerateBackupPoms=false -DnewVersion="$VERSION"
-      - run: mvn -pl !com.indeed:proctor-pipet-deploy "-DaltDeploymentRepository=repo::default::file://maven-publish" deploy
+      - run: mvn -pl !com.indeed:proctor-pipet-deploy,!com.indeed:com.indeed:coverage-report "-DaltDeploymentRepository=repo::default::file://maven-publish" deploy
       - uses: actions/upload-artifact@v2
         with:
           name: publishArtifacts
