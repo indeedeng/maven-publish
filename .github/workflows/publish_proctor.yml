@@ -43,7 +43,8 @@ jobs:
           distribution: 'zulu'
       - uses: actions/download-artifact@v2
         with:
-          name: nextversion.txt
+          name: version
+          path: nextversion.txt
       - run: |
           VERSION=$(cat nextversion.txt)
           mvn -q org.codehaus.mojo:versions-maven-plugin:2.3:set -DgenerateBackupPoms=false -DnewVersion="$VERSION"
