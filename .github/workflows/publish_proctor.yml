@@ -22,7 +22,7 @@ jobs:
       - uses: gradle/gradle-build-action@v2.0.1
         with:
           gradle-version: 7.3.3
-          arguments: findNextVersion --group com.indeed --name proctor-common
+          arguments: findNextVersion --group com.indeed --name proctor-common --refresh-dependencies
       - uses: actions/upload-artifact@v2
         with:
           name: version
@@ -30,6 +30,7 @@ jobs:
           retention-days: 1
   build:
     name: Build Project
+    needs: findNextVersion
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
