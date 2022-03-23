@@ -42,10 +42,10 @@ if [[ "$(echo "$VERSIONS" | wc -l)" != "1" ]]; then
   echo "Publish can only contain one version number. Found multiple versions"
   exit 1
 fi
-if [[ "$REF" != "" && "$VERSIONS" != *-dev-* ]]; then
-  echo "Non-main branches can only publish dev versions. If you are publishing main, the branch parameter should be left empty."
-  exit 1
-fi
+#if [[ "$REF" != "" && "$VERSIONS" != *-dev-* ]]; then
+#  echo "Non-main branches can only publish dev versions. If you are publishing main, the branch parameter should be left empty."
+#  exit 1
+#fi
 
 echo "Verified"
 echo
