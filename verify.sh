@@ -15,6 +15,8 @@ elif [[ "$REPO" = "status" ]]; then
   ALLOWED_PATTERN='com/indeed/status-.*'
 elif [[ "$REPO" = "proctor" ]]; then
   ALLOWED_PATTERN='com/indeed/proctor-.*'
+elif [[ "$REPO" = "oauth-client" ]]; then
+  ALLOWED_PATTERN='com/indeed/oauth-client-.*'
 fi
 
 if [[ "$ALLOWED_PATTERN" = "" ]]; then
