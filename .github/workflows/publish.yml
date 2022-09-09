@@ -23,6 +23,9 @@ jobs:
         with:
           repository: indeedeng/${{ github.event.inputs.repo }}
           ref: ${{ github.event.inputs.ref }}
+      - name: Install Snappy Lib
+        if: github.event.inputs.repo == 'util'
+        run: sudo apt-get install -y libsnappy-dev
       - uses: actions/setup-java@v2
         with:
           java-version: '11'
